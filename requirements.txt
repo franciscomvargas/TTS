@@ -48,3 +48,6 @@ einops
 transformers
 #deps for bark
 encodec
+
+# DESOTA PCKG
+desota
