@@ -146,7 +146,7 @@ fi
 echo "Creating MiniConda Environment..."
 if [ "$debug" -eq "1" ]; 
 then
-    conda create --prefix $MODEL_ENV -y
+    conda create --prefix $MODEL_ENV python=3.11 -y
     conda activate $MODEL_ENV
 else
     conda create --prefix $MODEL_ENV -y&> /dev/null

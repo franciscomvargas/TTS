@@ -1,3 +1,6 @@
+# DeSOTA ignorable files
+results/
+
 WadaSNR/
 .idea/
 *.pyc

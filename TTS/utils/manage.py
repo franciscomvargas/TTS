@@ -23,6 +23,12 @@ LICENSE_URLS = {
     "cc-by-sa 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
 }
 
+APP_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+def de_get_user_data_dir(model):
+    user_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(APP_PATH))))
+    user_data = os.path.join(user_path, ".local", "share", model)
+    print(f"[ DeSOTA ] tts models dir: {user_data}")
+    return user_data
 
 class ModelManager(object):
     """Manage TTS models defined in .models.json.
@@ -44,7 +50,7 @@ class ModelManager(object):
         self.progress_bar = progress_bar
         self.verbose = verbose
         if output_prefix is None:
-            self.output_prefix = get_user_data_dir("tts")
+            self.output_prefix = de_get_user_data_dir("tts")
         else:
             self.output_prefix = os.path.join(output_prefix, "tts")
         self.models_dict = None
