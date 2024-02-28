@@ -40,6 +40,7 @@ APP_PATH = os.path.dirname(os.path.realpath(__file__))
 OUT_DIR = os.path.join(APP_PATH, "results")
 if not os.path.isdir(OUT_DIR):
     os.mkdir(OUT_DIR)
+    detools.user_chown(OUT_DIR)
 
 parser.add_argument("-rp", "--respath", 
                     help=f'Output TTS wav file path, default created at inside the class `C_TTS`',
@@ -110,10 +111,11 @@ def pcol(obj, template, nostart=False, noend=False):
         return obj
 
 class C_TTS:
-    def __init__(self, query, respath):
+    def __init__(self, query, speaker, respath):
         if not isinstance(query, str):
             raise ValueError(f"Input Query not String: {type(query)}")
         self.query = query
+        self.speaker = speaker
         if respath == "__default__":
             respath = os.path.join(OUT_DIR, f"tts_res{int(time.time())}.wav")
         self.respath = respath
@@ -125,7 +127,7 @@ class C_TTS:
         # ❗ Since this model is multi-speaker and multi-lingual, we must set the target speaker and the language
         # Text to speech to a file
         try:
-            tts.tts_to_file(text=self.query, speaker=TTS_SPEAKER, language=tts.languages[0], file_path=self.respath)
+            tts.tts_to_file(text=self.query, speaker=self.speaker, language=tts.languages[0], file_path=self.respath)
             print(f"[ SUCESS ] Smooth Operation!")
             return self.respath
         except Exception as e:
@@ -159,7 +161,7 @@ def main(args):
             
             
             # LET'S GOO!
-            c_tts = C_TTS(_user_query, args.respath)
+            c_tts = C_TTS(_user_query, args.speaker, args.respath)
             tts_res = c_tts.run_tts()
                 
             
@@ -168,6 +170,7 @@ def main(args):
 
             # Print Results
             if tts_res != "__fail__":
+                detools.user_chown(tts_res)
                 if USER_SYS == "lin":
                     os.system('xdg-open %s' % tts_res)
                 else:
@@ -177,7 +180,7 @@ def main(args):
                 print(pcol("\nTTS Request Failure!\n", "fail"))
     else:
         # LET'S GOO!
-        c_tts = C_TTS(args.query, args.respath)
+        c_tts = C_TTS(args.query, args.speaker, args.respath)
         tts_res = c_tts.run_tts()
         if tts_res == "__fail__":
             exit(1)
